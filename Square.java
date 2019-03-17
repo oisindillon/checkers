@@ -5,18 +5,28 @@ public class Square{
 
     private int xLoc;
     private int yLoc;
+    private JButton tile;
 
-    public Square(int x, int y, boolean colour){
+    public Square(int y, int x, boolean colour) {
         xLoc = x;
         yLoc = y;
+        Icon icon;
         if(colour == true){
-            ImageIcon icon = new ImageIcon("C:\\Users\\oapdi\\OneDrive\\Desktop\\uni\\scc110\\Checkers Project\\scc110checkers\\empty.png");
+            icon = new ImageIcon("empty.png");
         }
         else{
-            ImageIcon icon = new ImageIcon("C:\\Users\\oapdi\\OneDrive\\Desktop\\uni\\scc110\\Checkers Project\\scc110checkers\\empty2.png");
+            icon = new ImageIcon("empty2.png");
         }
-        JPanel tile = new JPanel(icon);
-        tile.setLocation(xLoc, yLoc);
+        tile = new JButton(icon);
+    }
+    public int getX(){
+        return xLoc;
+    }
+    public int getY(){
+        return yLoc;
+    }
+    public JButton getTile(){
+        return tile;
     }
 
 
