@@ -1,0 +1,1 @@
+tileArray[i*8 + j].getTile().addActionListener(this);
