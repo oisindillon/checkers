@@ -41,6 +41,9 @@ public class Board extends JFrame implements ActionListener{
                     if(i <=8 && i >=5){
                         type = "WHITE";
                     }
+                    if(i>=0 && i<=2){
+                        type = "RED";
+                    }
                 }
                 
                 //generates tile
@@ -72,7 +75,7 @@ public class Board extends JFrame implements ActionListener{
         else{   //Identifies second click
             for(int i =0; i<64; i++){
                 if(e.getSource() == check.getArray()[i].getTile()){
-                    if(check.getArray()[previous].getPiece() == "WHITE"){
+                    if(check.getArray()[previous].getPiece() == "WHITE" || check.getArray()[previous].getPiece() == "RED"){
                         //Moves the piece
                         check.getArray()[previous].editPiece(check.getArray()[previous].moveTo(check.getArray()[i]));
                         //Also updates the piece of the first clicked item
