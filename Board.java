@@ -60,8 +60,39 @@ public class Board extends JFrame implements ActionListener{
 
     }
 
+    public void showOption(int change, boolean add){    //Shows the yellow panels where moves are possible
+        if(add == true){
+            if(change != 0){
+                //checks to make sure the square in front is empty and that there is no overlapping from the array on the board
+                if(check.getArray()[previous+1+change*8].getPiece() == "NONE" && check.getArray()[previous+1+change*8].getY() == check.getArray()[previous].getY()+change){
+                    //sets the tile to yellow
+                    check.getArray()[previous+1+change*8].editPiece("MAYBE");
+                }
+                if(check.getArray()[previous-1+change*8].getPiece() == "NONE" && check.getArray()[previous-1+change*8].getY() == check.getArray()[previous].getY()+change){
+                    check.getArray()[previous-1+change*8].editPiece("MAYBE");
+                }
+                
+            }
+        }
+        else{   //removes the yellow option tiles after the checker has not been moved
+            //checks to see if the piece is yellow and then changes it to white
+            //does not need to check for overlap as the overlapped tiles aren't yellow
+            if(check.getArray()[previous+1+change*8].getPiece() == "MAYBE"){
+
+                check.getArray()[previous+1+change*8].editPiece("NONE");
+            }
+            if(check.getArray()[previous-1+change*8].getPiece() == "MAYBE"){
+                check.getArray()[previous-1+change*8].editPiece("NONE");
+            }
+        }
+        
+    }
+
+    
+
     //ActionEvent for clicks
     public void actionPerformed(ActionEvent e) {
+        int change;
         //Identifies first click
         if(firstClick==true){
             for(int i =0; i<64; i++){
@@ -69,15 +100,22 @@ public class Board extends JFrame implements ActionListener{
                     previous = i;
                 }
             }
-            System.out.println("whats goin on");
-            firstClick = false;        
+            firstClick = false;
+            change = check.getArray()[previous].isWhite();//works out diretion pieces are meant to move in
+            this.showOption(change, true);
+            
         }
         else{   //Identifies second click
             for(int i =0; i<64; i++){
                 if(e.getSource() == check.getArray()[i].getTile()){
-                    if(check.getArray()[previous].getPiece() == "WHITE" || check.getArray()[previous].getPiece() == "RED"){
+                    if(check.getArray()[previous].getPiece() != "NONE"){//Makes it so only tiles with pieces on it will move
                         //Moves the piece
-                        check.getArray()[previous].editPiece(check.getArray()[previous].moveTo(check.getArray()[i]));
+                        change = check.getArray()[previous].isWhite();//works out diretion pieces are meant to move in
+                        this.showOption(change, false);
+
+                        if(check.getArray()[previous].canMoveTo(check.getArray()[i]) == true){
+                            check.getArray()[previous].editPiece(check.getArray()[previous].moveTo(check.getArray()[i]));
+                        }
                         //Also updates the piece of the first clicked item
 
 
