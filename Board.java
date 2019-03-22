@@ -11,7 +11,15 @@ public class Board extends JFrame implements ActionListener{
     private Checkers check;
     private Boolean firstClick = true;
     private int previous;
+    private Boolean whiteTurn = true;
 
+    /*
+     *
+     *
+     *  Generates a 8x8, 64 grid of Squares
+     *
+     *
+     */
     public Board(Checkers c){
         check = c;
         //initialises the frame
@@ -60,16 +68,21 @@ public class Board extends JFrame implements ActionListener{
 
     }
 
-    public void showOption(int change, boolean add){    //Shows the yellow panels where moves are possible
+    public void showOption(int c, boolean add, Square source){    //Shows the yellow panels where moves are possible
+        
+        
         if(add == true){
-            if(change != 0){
+            if(c != 0){
                 //checks to make sure the square in front is empty and that there is no overlapping from the array on the board
-                if(check.getArray()[previous+1+change*8].getPiece() == "NONE" && check.getArray()[previous+1+change*8].getY() == check.getArray()[previous].getY()+change){
-                    //sets the tile to yellow
-                    check.getArray()[previous+1+change*8].editPiece("MAYBE");
-                }
-                if(check.getArray()[previous-1+change*8].getPiece() == "NONE" && check.getArray()[previous-1+change*8].getY() == check.getArray()[previous].getY()+change){
-                    check.getArray()[previous-1+change*8].editPiece("MAYBE");
+                for(int j=0; j<64; j++){
+                    int middle = check.getArray()[j].getX() - source.getX();
+                    middle = middle/2;
+                    middle = previous+c*8+middle;
+                    Square mid = check.getArray()[middle];  //Sets a temporary "middle" value (value inbetween target and source)
+                    if(source.canMoveTo(check.getArray()[j], whiteTurn, mid)==true){
+                        check.getArray()[j].editPiece("MAYBE");
+                        
+                    }
                 }
                 
             }
@@ -77,21 +90,17 @@ public class Board extends JFrame implements ActionListener{
         else{   //removes the yellow option tiles after the checker has not been moved
             //checks to see if the piece is yellow and then changes it to white
             //does not need to check for overlap as the overlapped tiles aren't yellow
-            if(check.getArray()[previous+1+change*8].getPiece() == "MAYBE"){
-
-                check.getArray()[previous+1+change*8].editPiece("NONE");
-            }
-            if(check.getArray()[previous-1+change*8].getPiece() == "MAYBE"){
-                check.getArray()[previous-1+change*8].editPiece("NONE");
+            for(int j=0; j<64; j++){
+                if(check.getArray()[j].getPiece()=="MAYBE"){
+                    check.getArray()[j].editPiece("NONE");
+                }
             }
         }
         
     }
 
-    
-
     //ActionEvent for clicks
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e){
         int change;
         //Identifies first click
         if(firstClick==true){
@@ -102,32 +111,55 @@ public class Board extends JFrame implements ActionListener{
             }
             firstClick = false;
             change = check.getArray()[previous].isWhite();//works out diretion pieces are meant to move in
-            this.showOption(change, true);
-            
+            if(whiteTurn==true){
+                if(check.getArray()[previous].getPiece() == "WHITE"){
+                    this.showOption(change, true, check.getArray()[previous]);
+                }
+            }
+            else{
+                if(check.getArray()[previous].getPiece() == "RED"){
+                    this.showOption(change, true, check.getArray()[previous]);
+                }
+            }    
         }
         else{   //Identifies second click
             for(int i =0; i<64; i++){
-                if(e.getSource() == check.getArray()[i].getTile()){
-                    if(check.getArray()[previous].getPiece() != "NONE"){//Makes it so only tiles with pieces on it will move
-                        //Moves the piece
-                        change = check.getArray()[previous].isWhite();//works out diretion pieces are meant to move in
-                        this.showOption(change, false);
+                if(e.getSource() == check.getArray()[i].getTile()){//Identifies which tile is selected
+                    
+                    change = check.getArray()[previous].isWhite();//works out diretion pieces are meant to move in
 
-                        if(check.getArray()[previous].canMoveTo(check.getArray()[i]) == true){
-                            check.getArray()[previous].editPiece(check.getArray()[previous].moveTo(check.getArray()[i]));
+                    
+                    int middle = check.getArray()[i].getX() - check.getArray()[previous].getX();
+                    middle = middle/2;
+                    middle = previous+change*8+middle;
+                    Square mid = check.getArray()[middle];
+                    
+
+                    
+                    this.showOption(change, false, check.getArray()[previous]);
+
+
+                    //Moves the piece
+                    if(check.getArray()[previous].canMoveTo(check.getArray()[i], whiteTurn, mid) == true){
+                        
+                        if(check.getArray()[middle].getX() == check.getArray()[previous].getX()){
+                            System.out.println("Normal Jump");
                         }
-                        //Also updates the piece of the first clicked item
-
-
-
-
-                        /*System.out.println("firstTile:");
-                        System.out.println(check.getArray()[previous].getPiece());
-                        System.out.println(check.getArray()[previous].getIcon());
-                        System.out.println("secondTile:");
-                        System.out.println(check.getArray()[i].getPiece());
-                        System.out.println(check.getArray()[i].getIcon());*/
+                        else{
+                            check.getArray()[middle].editPiece("NONE");
+                            System.out.println("Big Jump");
+                        }
+                        check.getArray()[previous].editPiece(check.getArray()[previous].moveTo(check.getArray()[i]));
+                        //Changes turns of the player
+                        if(whiteTurn==true){
+                            whiteTurn=false;
+                        }
+                        else{
+                            whiteTurn=true;
+                        }
                     }
+                    //Also updates the piece of the first clicked item
+
                 }
             }
             firstClick = true;

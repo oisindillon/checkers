@@ -37,10 +37,11 @@ public class Square extends JButton{
     }
 
     public String moveTo(Square nextTile){
-        
+
         String temp = nextTile.getPiece();                  //Stores the next tile the piece will move to
         nextTile.editPiece(this.getPiece());                //Updates the next tile to the peice of the previous tile
         return temp;                                        //returns the value of what the next tile used to be
+        
     }
 
     public int isWhite(){
@@ -58,14 +59,59 @@ public class Square extends JButton{
         //if the piece is white then it will travel up the board (increase in x)
     }
 
-    public Boolean canMoveTo(Square nextTile){
+    public Boolean canMoveTo(Square nextTile, Boolean playerWhite, Square middle){
         int change = isWhite();
 
+        //playerWhite boolean tells you if it is the white or the red persons turn to go
+        if(playerWhite==true){
+            //If its the white persons go then a red piece cannot be selected
+            if(this.getPiece() != "WHITE"){
+                return false;
+            }
+        }
+        else{
+            if(this.getPiece() != "RED"){
+                return false;
+            }
+        }
 
-        if(nextTile.getX() == xLoc-1 ||  nextTile.getX() == xLoc+1){    //Makes sure the move is one space left or right
-            if(nextTile.getY() == yLoc + change){                       //Makes sure the move is forward and only one space
-                if(nextTile.getPiece() == "NONE"){                      //Makes sure that the piece in front is empty before moving
-                    return true;
+        
+        if(this.getPiece() != "NONE" || this.getPiece() != "MAYBE"){//Makes it so only tiles with pieces on it will move
+            /*
+             *
+             *
+             *  Set of Rules for large jump
+             *
+             *
+             */
+            if(nextTile.getX() - this.getX() == 2 || nextTile.getX() - this.getX() == -2){
+                if(middle.getX() != this.getX()){
+                    if(nextTile.getY()== this.getY()+change*2){
+                        if(middle.getPiece() == "NONE" || middle.getPiece() == "MAYBE"){
+                            return false;
+                        }
+                        else{
+                            return true;
+                        }
+                    }
+                    
+                }
+            }
+            /*
+             *
+             *
+             *  Set of Rules for small jump
+             *
+             *
+             */
+            if(nextTile.getX() == xLoc-1 ||  nextTile.getX() == xLoc+1){    //Makes sure the move is one space left or right
+                if(nextTile.getY() == yLoc + change){                       //Makes sure the move is forward and only one space
+                    if(nextTile.getPiece() == "NONE"){                      //Makes sure that the piece in front is empty before moving
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
                 }
                 else{
                     return false;
@@ -80,7 +126,7 @@ public class Square extends JButton{
         }
     }
 
-    //Get Methods
+    //Accessors
     public int getX(){
         return xLoc;
     }
@@ -97,7 +143,7 @@ public class Square extends JButton{
         return icon;
     }
 
-    //Mutator
+    //Mutators
     public void editPiece(String s){    //s is the value fo which it's meant to be updated
         piece = s;
         //Changes instance variable icon according to what piece it was changed to
