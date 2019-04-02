@@ -4,19 +4,13 @@ import java.awt.event.*;
 
 public class Board extends JFrame implements ActionListener{
 
-    //private JFrame frame = new JFrame("Checkers");
+    //attributes
     private Checkers check;
     private Boolean firstClick = true;
     private int previous;
     private Boolean whiteTurn = true;
 
-    /*
-     *
-     *
-     *  Generates a 8x8, 64 grid of Squares
-     *
-     *
-     */
+    //constructor
     public Board(Checkers c){
         check = c;
         //initialises the frame
@@ -65,24 +59,32 @@ public class Board extends JFrame implements ActionListener{
 
     }
 
-    public void showOption(int c, boolean add, Square source){    //Shows the yellow panels where moves are possible
-        
+    //methods
+    public void showOption(int change, boolean add, Square source){    //Shows the yellow panels where moves are possible
         
         if(add == true){
-            if(c != 0){
+            if(change != 0){
                 //checks to make sure the square in front is empty and that there is no overlapping from the array on the board
+                int jumps =0;
                 for(int j=0; j<64; j++){
                     int middle = check.getArray()[j].getX() - source.getX();
                     middle = middle/2;
-                    middle = previous+c*8+middle;
+                    middle = previous+change*8+middle;
                     Square mid = check.getArray()[middle];  //Sets a temporary "middle" value (value inbetween target and source)
+                    if(source.canJumpTo(check.getArray()[j], whiteTurn, mid)==true){
+                        check.getArray()[j].editPiece("MAYBE");
+                        jumps++;
+                    }
+                }
+                //only if there are no jumps available then it will show the moves available
+                if(jumps == 0){
+                    for(int j=0; j<64; j++){
                     if(source.canMoveTo(check.getArray()[j], whiteTurn)==true){
                         check.getArray()[j].editPiece("MAYBE");
                     }
-                    if(source.canJumpTo(check.getArray()[j], whiteTurn, mid)==true){
-                        check.getArray()[j].editPiece("MAYBE");
                     }
                 }
+                
                 
             }
         }

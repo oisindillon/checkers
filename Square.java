@@ -4,14 +4,14 @@ import java.awt.event.*;
 
 public class Square extends JButton{
 
+    //attributes
     private int xLoc;       //xLocation
     private int yLoc;       //yLocation
     private JButton tile;   //JButton Variable
     private String piece;   //Variable of what piece is on the square
     private Icon icon;      //Variable for icon of the image
 
-    //public moveTo
-
+    //constructor
     public Square(int y, int x, boolean colour, String p) {
         //Initialises Variables
         piece = p;
@@ -36,6 +36,7 @@ public class Square extends JButton{
         tile = new JButton(icon);
     }
 
+    //methods
     public String moveTo(Square nextTile){
 
         String temp = nextTile.getPiece();                  //Stores the next tile the piece will move to
@@ -105,6 +106,19 @@ public class Square extends JButton{
     public Boolean canJumpTo(Square nextTile, Boolean playerWhite, Square middle){
         int change = isWhite();
 
+        //playerWhite boolean tells you if it is the white or the red persons turn to go
+        if(playerWhite==true){
+            //If its the white persons go then a red piece cannot be selected
+            if(this.getPiece() != "WHITE"){
+                return false;
+            }
+        }
+        else{
+            if(this.getPiece() != "RED"){
+                return false;
+            }
+        }
+        
         if(this.getPiece() != "NONE" || this.getPiece() != "MAYBE"){        //Makes it so only tiles with pieces on it will move
             if(nextTile.getX() - this.getX() == 2 || nextTile.getX() - this.getX() == -2){      //makes sure the destination tile is two X coordinates away
                 if(middle.getX() != this.getX()){                                               //makes sure the middle X square Coordinate isnt the same as the source x Coor
