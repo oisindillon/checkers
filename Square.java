@@ -59,7 +59,7 @@ public class Square extends JButton{
         //if the piece is white then it will travel up the board (increase in x)
     }
 
-    public Boolean canMoveTo(Square nextTile, Boolean playerWhite, Square middle){
+    public Boolean canMoveTo(Square nextTile, Boolean playerWhite){
         int change = isWhite();
 
         //playerWhite boolean tells you if it is the white or the red persons turn to go
@@ -80,26 +80,6 @@ public class Square extends JButton{
             /*
              *
              *
-             *  Set of Rules for large jump
-             *
-             *
-             */
-            if(nextTile.getX() - this.getX() == 2 || nextTile.getX() - this.getX() == -2){
-                if(middle.getX() != this.getX()){
-                    if(nextTile.getY()== this.getY()+change*2){
-                        if(middle.getPiece() == "NONE" || middle.getPiece() == "MAYBE"){
-                            return false;
-                        }
-                        else{
-                            return true;
-                        }
-                    }
-                    
-                }
-            }
-            /*
-             *
-             *
              *  Set of Rules for small jump
              *
              *
@@ -109,21 +89,50 @@ public class Square extends JButton{
                     if(nextTile.getPiece() == "NONE"){                      //Makes sure that the piece in front is empty before moving
                         return true;
                     }
-                    else{
+                    else
                         return false;
-                    }
                 }
-                else{
+                else
                     return false;
-                }
             }
-            else{
+            else
                 return false;
-            }
         }
-        else{
+        else
             return false;
+    }
+
+    public Boolean canJumpTo(Square nextTile, Boolean playerWhite, Square middle){
+        int change = isWhite();
+
+        if(this.getPiece() != "NONE" || this.getPiece() != "MAYBE"){        //Makes it so only tiles with pieces on it will move
+            if(nextTile.getX() - this.getX() == 2 || nextTile.getX() - this.getX() == -2){      //makes sure the destination tile is two X coordinates away
+                if(middle.getX() != this.getX()){                                               //makes sure the middle X square Coordinate isnt the same as the source x Coor
+                    if(nextTile.getY()== this.getY()+change*2){                                 //makes sure the destination tile is in the correct direction the peices should move
+                        if(nextTile.getPiece() == "NONE" || nextTile.getPiece() == "MAYBE"){    //makes sure the destination tile is empty
+                            if(playerWhite==true && middle.getPiece() == "RED"){                
+                                return true;
+                            }
+                            else if(playerWhite==false && middle.getPiece() == "WHITE"){        //makes sure that the piece jumped over is of opposite suit.
+                                return true;
+                            }
+                            else
+                                return false;
+                        }
+                        else
+                            return false;
+                    }
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
         }
+        else
+            return false;
     }
 
     //Accessors
