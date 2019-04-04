@@ -97,6 +97,28 @@ public class Board extends JFrame implements ActionListener{
                 }
             }
         }
+    }
+
+    public boolean checkPossibleJump(int change){
+        int jumps =0;
+        for(int i=0; i<64; i++){
+            for(int j=0; j<64; j++){
+                int middle = check.getArray()[j].getX() - check.getArray()[i].getX();
+                middle = middle/2;
+                middle = previous+change*8+middle;
+                Square mid = check.getArray()[middle];  //Sets a temporary "middle" value (value inbetween target and source)
+                if(check.getArray()[i].canJumpTo(check.getArray()[j], whiteTurn, mid)==true){
+                    jumps++;
+                }
+            }
+        }
+        if(jumps >0){
+            System.out.println(jumps);
+            return true;
+        }
+        else{
+            return false;
+        }
         
     }
 
@@ -143,7 +165,10 @@ public class Board extends JFrame implements ActionListener{
                         
                     }
                     this.showOption(change, false, check.getArray()[previous]);//removes the highlighted options
-
+                    change = check.getArray()[previous].isWhite();//works out diretion pieces are meant to move in
+                    if(checkPossibleJump(change)==true){
+                        System.out.println("It works");
+                    }
                 }
             }
             firstClick = true;
